@@ -87,6 +87,9 @@ class HandlingModifierResponse:
     handlingTimeScale: float
 
 #Perk Value is the amount of stacks of the perk and/or if its active
+#toggle perks like surrounded will use it as a bool, 0 is false, 1 is true
+#dynamic perks like rampage will use it as the current stack
+#static perks like focused fury will ignore this value
 
 #replace function name with name of perk
 
@@ -122,7 +125,7 @@ if __name__ == "__main__":
         _currFiringData=FiringConfig(0.5, 0, 1),
         _baseDamage=50,
         _baseCritMult=1.6,
-        _shotsThisMagHit=5,
+        _shotsHitThisMag=5,
         _totalShotsHit=15,
         _baseMag=10,
         _currMag=5,
