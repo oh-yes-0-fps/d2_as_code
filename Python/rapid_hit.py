@@ -12,14 +12,6 @@ class FiringConfig:
     isCharge: bool = field(default=False)
     isExplosive: bool = field(default=False)
 
-#ignore this for now
-@dataclass()
-class RefundData:
-    crit: bool
-    requirement: int
-    refund: int
-
-
 ###
 ###You can delete whatever you don't use
 ###
@@ -51,32 +43,26 @@ class FunctionInputData:
 
 
 @dataclass()
-class DamageModifierResponse:
-    #i.e. focused fury
-    damageScale: float #value of 1.0 does nothing
-    #i.e. whisper catalyst
-    critScale: float #value of 1.0 does nothing
+class ReloadModifierResponse:
+    reloadStatAdd: float
+    reloadTimeScale: float
 
 
-def damageModifier(_input: FunctionInputData, _perkValue: int) -> DamageModifierResponse:
-    def lerp(a, b, t):
-        return a + (b - a) * t
-    baseValue = 0.121
-    maxValue = 0.256
-    if _input._currMag <= _input._baseMag/2.0:
-        #lower mag is past half more dmg it does
-        t = 1 - (_input._currMag-1)/((_input._baseMag/2.0)-1)
-        print(t)
-        if t < 0:
-            t = 0
-        buffAmount = lerp(baseValue, maxValue, t)
-        return DamageModifierResponse(buffAmount, 1.0)
+#called right before the reload
+def reloadModifier(_input: FunctionInputData, _perkValue: int) -> ReloadModifierResponse:
+    values = [(0,1),(5,0.99),(30,0.97),(35,0.96),(45,0.94),(60,0.93)]
+    if _input._shotsHitThisMag > 5:
+        value = values[-1]
     else:
-        return DamageModifierResponse(1.0, 1.0)
+        value = values[_input._shotsHitThisMag]
+    return ReloadModifierResponse(value[0], value[1])
 
 
-
-
+#called for weapon inspection
+def statModifier(_input: FunctionInputData, _perkValue: int) -> dict[str, int]:
+    values = [(0,0),(5,2),(30,12),(35,14),(45,18),(60,25)]
+    value = values[_perkValue]
+    return {"reload": value[0], "stability": value[1]}
 
 
 if __name__ == "__main__":
@@ -88,7 +74,7 @@ if __name__ == "__main__":
         _shotsHitThisMag=5,
         _totalShotsHit=15,
         _baseMag=10,
-        _currMag=1,
+        _currMag=5,
         _reservesLeft=10,
         _timeTotal=8.5,#assumes reload is 2s
         _timeThisMag=2,
@@ -96,8 +82,7 @@ if __name__ == "__main__":
         _weaponType="Hand Cannon",
         _weaponSlot="Primary"
     )
-    perkValue = 1
-    yourFunc = damageModifier
+    perkValue = 0
+    yourFunc = reloadModifier
 
     pprint.pprint(yourFunc(inputData, perkValue).__dict__)
-

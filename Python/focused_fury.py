@@ -52,7 +52,7 @@ class DamageModifierResponse:
 
 def damageModifier(_input: FunctionInputData, _perkValue: int) -> DamageModifierResponse:
     response = DamageModifierResponse(1.2, 1)
-    if _input._totalShotsHit > _input._baseMag/2:
+    if _input._totalShotsHit >= _input._baseMag/2:
         #kinda a shortcut here, if the gun can't reproc before the buff runs out this will be wrong
         #only time i think this could happen is machine guns maybe...
         return response
@@ -67,7 +67,7 @@ if __name__ == "__main__":
         _baseDamage=50,
         _baseCritMult=1.6,
         _shotsHitThisMag=5,
-        _totalShotsHit=15,
+        _totalShotsHit=5,
         _baseMag=10,
         _currMag=5,
         _reservesLeft=10,

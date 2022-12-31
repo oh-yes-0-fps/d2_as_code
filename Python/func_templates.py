@@ -93,30 +93,33 @@ class HandlingModifierResponse:
 
 #replace function name with name of perk
 
+#called b4 the bullet is shot
 def damageModifier(_input: FunctionInputData, _perkValue: int) -> DamageModifierResponse:
     pass
 
 
-
+#called after the bullet is shot
 def extraDamage(_input: FunctionInputData, _perkValue: int) -> ExtraDamageResponse:
     pass
 
 
-
+#called right before the reload
 def reloadModifier(_input: FunctionInputData, _perkValue: int) -> ReloadModifierResponse:
     pass
 
 
-
+#called after every shot
 def firingModifier(_input: FunctionInputData, _perkValue: int) -> FiringModifierResponse:
     pass
 
 
-
+#is only used in static handling equations for now but later could do math for weapon combos
 def handlingModifier(_input: FunctionInputData, _perkValue: int) -> HandlingModifierResponse:
     pass
 
-
+#called for weapon inspection
+def statModifier(_input: FunctionInputData, _perkValue: int) -> dict[str, int]:
+    pass
 
 
 if __name__ == "__main__":
