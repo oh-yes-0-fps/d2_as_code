@@ -44,7 +44,10 @@ class FunctionInputData:
     _timeThisMag:float
     #for testing have this function has a dict with name of stat
     #   as key and value as the value of the stat
+    #   in production will be a dict with enum as key and value as value of stat
     _stats:dict
+    _weaponType:str #in production will be enum
+    _weaponSlot:str #in production will be enum
 
 
 @dataclass()
@@ -126,7 +129,9 @@ if __name__ == "__main__":
         _reservesLeft=10,
         _timeTotal=8.5,#assumes reload is 2s
         _timeThisMag=2,
-        _stats = {}#if u need stats add them
+        _stats = {},#if u need stats add them
+        _weaponType="Hand Cannon",
+        _weaponSlot="Primary"
     )
     perkValue = 1
     yourFunc = damageModifier
