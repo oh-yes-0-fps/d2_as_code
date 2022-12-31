@@ -12,20 +12,13 @@ class FiringConfig:
     isCharge: bool = field(default=False)
     isExplosive: bool = field(default=False)
 
-#ignore this for now
-@dataclass()
-class RefundData:
-    crit: bool
-    requirement: int
-    refund: int
-
 
 ###
 ###You can delete whatever you don't use
 ###
 ###Test the function
 ###
-###Author: Your Name
+###Author: Oh-yes-10-FPS
 ###Date_last_updated: 12/30/2020 :: US
 
 #import this here to prevent recursive import, its fine cuz duck typed
@@ -57,66 +50,14 @@ class DamageModifierResponse:
     #i.e. whisper catalyst
     critScale: float #value of 1.0 does nothing
 
-@dataclass()
-class ExtraDamageResponse:
-    #for example grand overture, you would have additive dmg of all the rockets,
-    #  time for all the rockets to shoot, and number of rockets
-    additiveDamage: float
-    timeForAdditiveDamage: float
-    #number of hits for the additive damage, doesn't mult dmg just spreads it out
-    additiveDamageHits: int
-    #damage scales for weapon buffs
-    weaponScale: bool
-    #damage scales for crits
-    critScale: bool
-
-@dataclass()
-class ReloadModifierResponse:
-    reloadStatAdd: float
-    reloadTimeScale: float
-
-@dataclass()
-class FiringModifierResponse:
-    burstDelayScale: float #lower is faster
-    burstSizeAdd: int #additive
-    burstDurationScale: float #lower is faster
-
-@dataclass()
-class HandlingModifierResponse:
-    handlingStatAdd: float
-    handlingTimeScale: float
-
-#Perk Value is the amount of stacks of the perk and/or if its active
-#toggle perks like surrounded will use it as a bool, 0 is false, 1 is true
-#dynamic perks like rampage will use it as the current stack
-#static perks like focused fury will ignore this value
-
-#replace function name with name of perk
-
 def damageModifier(_input: FunctionInputData, _perkValue: int) -> DamageModifierResponse:
-    pass
-
-
-
-def extraDamage(_input: FunctionInputData, _perkValue: int) -> ExtraDamageResponse:
-    pass
-
-
-
-def reloadModifier(_input: FunctionInputData, _perkValue: int) -> ReloadModifierResponse:
-    pass
-
-
-
-def firingModifier(_input: FunctionInputData, _perkValue: int) -> FiringModifierResponse:
-    pass
-
-
-
-def handlingModifier(_input: FunctionInputData, _perkValue: int) -> HandlingModifierResponse:
-    pass
-
-
+    response = DamageModifierResponse(1.2, 1)
+    if _input._totalShotsHit > _input._baseMag/2:
+        #kinda a shortcut here, if the gun can't reproc before the buff runs out this will be wrong
+        #only time i think this could happen is machine guns maybe...
+        return response
+    else:
+        return DamageModifierResponse(1, 1)
 
 
 if __name__ == "__main__":
