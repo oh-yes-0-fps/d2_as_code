@@ -49,7 +49,7 @@ class ReloadModifierResponse:
 
 
 #called right before the reload
-def reloadModifier(_input: FunctionInputData, _perkValue: int) -> ReloadModifierResponse:
+def rapidHit(_input: FunctionInputData, _perkValue: int) -> ReloadModifierResponse:
     values = [(0,1),(5,0.99),(30,0.97),(35,0.96),(45,0.94),(60,0.93)]
     if _input._shotsHitThisMag > 5:
         value = values[-1]
@@ -59,7 +59,7 @@ def reloadModifier(_input: FunctionInputData, _perkValue: int) -> ReloadModifier
 
 
 #called for weapon inspection
-def statModifier(_input: FunctionInputData, _perkValue: int) -> dict[str, int]:
+def rapidHitStat(_input: FunctionInputData, _perkValue: int) -> dict[str, int]:
     values = [(0,0),(5,2),(30,12),(35,14),(45,18),(60,25)]
     value = values[_perkValue]
     return {"reload": value[0], "stability": value[1]}
@@ -83,6 +83,6 @@ if __name__ == "__main__":
         _weaponSlot="Primary"
     )
     perkValue = 0
-    yourFunc = reloadModifier
+    yourFunc = rapidHit
 
     pprint.pprint(yourFunc(inputData, perkValue).__dict__)

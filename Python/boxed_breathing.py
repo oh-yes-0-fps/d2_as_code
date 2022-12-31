@@ -57,26 +57,13 @@ class DamageModifierResponse:
     #i.e. whisper catalyst
     critScale: float #value of 1.0 does nothing
 
-
-def highImpact(_input: FunctionInputData, _perkValue: int) -> DamageModifierResponse:
-    def lerp(a, b, t):
-        return a + (b - a) * t
-    baseValue = 0.121
-    maxValue = 0.256
-    if _input._currMag <= _input._baseMag/2.0:
-        #lower mag is past half more dmg it does
-        t = 1 - (_input._currMag-1)/((_input._baseMag/2.0)-1)
-        print(t)
-        if t < 0:
-            t = 0
-        buffAmount = lerp(baseValue, maxValue, t)
-        return DamageModifierResponse(buffAmount, 1.0)
-    else:
-        return DamageModifierResponse(1.0, 1.0)
-
-
-
-
+#this is how kill clip, rampage, harmony, etc. work. cascade/desperado is same thing but use firing function.
+def boxedBreathing(_input: FunctionInputData, _perkValue: int) -> DamageModifierResponse:
+    if _input._totalShotsHit < 1:
+        #don't have additive crit in interface so just do math
+        value = (_input._baseCritMult+1)/_input._baseCritMult
+        return DamageModifierResponse(1, value)
+    return DamageModifierResponse(1, 1)
 
 
 if __name__ == "__main__":
@@ -85,10 +72,10 @@ if __name__ == "__main__":
         _currFiringData=FiringConfig(0.5, 0, 1),
         _baseDamage=50,
         _baseCritMult=1.6,
-        _shotsHitThisMag=5,
+        _shotsHitThisMag=55,
         _totalShotsHit=15,
-        _baseMag=10,
-        _currMag=1,
+        _baseMag=55,
+        _currMag=5,
         _reservesLeft=10,
         _timeTotal=8.5,#assumes reload is 2s
         _timeThisMag=2,
@@ -97,7 +84,6 @@ if __name__ == "__main__":
         _weaponSlot="Primary"
     )
     perkValue = 1
-    yourFunc = highImpact
+    yourFunc = boxedBreathing
 
     pprint.pprint(yourFunc(inputData, perkValue).__dict__)
-

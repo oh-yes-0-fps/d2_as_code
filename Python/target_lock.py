@@ -57,26 +57,21 @@ class DamageModifierResponse:
     #i.e. whisper catalyst
     critScale: float #value of 1.0 does nothing
 
-
-def highImpact(_input: FunctionInputData, _perkValue: int) -> DamageModifierResponse:
-    def lerp(a, b, t):
-        return a + (b - a) * t
-    baseValue = 0.121
-    maxValue = 0.256
-    if _input._currMag <= _input._baseMag/2.0:
-        #lower mag is past half more dmg it does
-        t = 1 - (_input._currMag-1)/((_input._baseMag/2.0)-1)
-        print(t)
-        if t < 0:
-            t = 0
-        buffAmount = lerp(baseValue, maxValue, t)
-        return DamageModifierResponse(buffAmount, 1.0)
+def targetLock(_input: FunctionInputData, _perkValue: int) -> DamageModifierResponse:
+    lerpTable = [(0.15,0.166), (0.37,0.23), (0.55,0.28), (0.75,0.34), (1.05,0.4)]
+    percentThroughMag = _input._shotsHitThisMag / _input._baseMag
+    if percentThroughMag > 1.05:
+        buff = 0.4
+    elif percentThroughMag < 0.15:
+        buff = 0
     else:
-        return DamageModifierResponse(1.0, 1.0)
-
-
-
-
+        for i in range(len(lerpTable)):
+            if percentThroughMag < lerpTable[i][0]:
+                buff = lerpTable[i-1][1] + ((lerpTable[i][1] - lerpTable[i-1][1]) * 
+                                            (percentThroughMag - lerpTable[i-1][0]) /
+                                            (lerpTable[i][0] - lerpTable[i-1][0]))
+                break
+    return DamageModifierResponse(buff+1, 1)
 
 
 if __name__ == "__main__":
@@ -85,10 +80,10 @@ if __name__ == "__main__":
         _currFiringData=FiringConfig(0.5, 0, 1),
         _baseDamage=50,
         _baseCritMult=1.6,
-        _shotsHitThisMag=5,
+        _shotsHitThisMag=55,
         _totalShotsHit=15,
-        _baseMag=10,
-        _currMag=1,
+        _baseMag=55,
+        _currMag=5,
         _reservesLeft=10,
         _timeTotal=8.5,#assumes reload is 2s
         _timeThisMag=2,
@@ -97,7 +92,6 @@ if __name__ == "__main__":
         _weaponSlot="Primary"
     )
     perkValue = 1
-    yourFunc = highImpact
+    yourFunc = targetLock
 
     pprint.pprint(yourFunc(inputData, perkValue).__dict__)
-

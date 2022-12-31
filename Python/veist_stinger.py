@@ -12,20 +12,13 @@ class FiringConfig:
     isCharge: bool = field(default=False)
     isExplosive: bool = field(default=False)
 
-#ignore this for now
-@dataclass()
-class RefundData:
-    crit: bool
-    requirement: int
-    refund: int
-
 
 ###
 ###You can delete whatever you don't use
 ###
 ###Test the function
 ###
-###Author: Oh-yes-10-FPS
+###Author: Your Name
 ###Date_last_updated: 12/30/2020 :: US
 
 #import this here to prevent recursive import, its fine cuz duck typed
@@ -49,34 +42,18 @@ class FunctionInputData:
     _weaponType:str #in production will be enum
     _weaponSlot:str #in production will be enum
 
-
 @dataclass()
-class DamageModifierResponse:
-    #i.e. focused fury
-    damageScale: float #value of 1.0 does nothing
-    #i.e. whisper catalyst
-    critScale: float #value of 1.0 does nothing
+class ReloadModifierResponse:
+    reloadStatAdd: float
+    reloadTimeScale: float
 
-
-def highImpact(_input: FunctionInputData, _perkValue: int) -> DamageModifierResponse:
-    def lerp(a, b, t):
-        return a + (b - a) * t
-    baseValue = 0.121
-    maxValue = 0.256
-    if _input._currMag <= _input._baseMag/2.0:
-        #lower mag is past half more dmg it does
-        t = 1 - (_input._currMag-1)/((_input._baseMag/2.0)-1)
-        print(t)
-        if t < 0:
-            t = 0
-        buffAmount = lerp(baseValue, maxValue, t)
-        return DamageModifierResponse(buffAmount, 1.0)
+#wthis also works for rapid fire frames
+#called right before the reload
+def veistStinger(_input: FunctionInputData, _perkValue: int) -> ReloadModifierResponse:
+    if _perkValue == 1:
+        return ReloadModifierResponse(0, 0)
     else:
-        return DamageModifierResponse(1.0, 1.0)
-
-
-
-
+        return ReloadModifierResponse(0, 1)
 
 
 if __name__ == "__main__":
@@ -88,7 +65,7 @@ if __name__ == "__main__":
         _shotsHitThisMag=5,
         _totalShotsHit=15,
         _baseMag=10,
-        _currMag=1,
+        _currMag=5,
         _reservesLeft=10,
         _timeTotal=8.5,#assumes reload is 2s
         _timeThisMag=2,
@@ -97,7 +74,6 @@ if __name__ == "__main__":
         _weaponSlot="Primary"
     )
     perkValue = 1
-    yourFunc = highImpact
+    yourFunc = veistStinger
 
     pprint.pprint(yourFunc(inputData, perkValue).__dict__)
-
